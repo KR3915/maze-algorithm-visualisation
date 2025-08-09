@@ -13,19 +13,23 @@ def main():
     print(grid)
     running = True
     clock = pygame.time.Clock()
+    cell_width, cell_height = draw_grid(screen, grid)
+    current_color = 2
     #program loop/quit handle
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        screen.fill((0, 0, 0))
-        draw_grid(screen, grid)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                col = int(mouse_x / cell_width)
+                row = int(mouse_y / cell_height)
+                grid[row, col] = current_color
         pygame.display.flip()
         clock.tick(60)
         fill_grid(grid, screen)
     pygame.quit()
-
-
+    quit()
 
 #define grid as np array
 def make_grid(rows, width):
@@ -46,6 +50,7 @@ def draw_grid(screen, grid):
                 cell_height
             )
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)
+    return(cell_width, cell_height)
 
 def fill_grid(grid, screen):
     rows, cols = grid.shape
