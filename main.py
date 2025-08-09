@@ -38,7 +38,7 @@ def main():
                     if 0 <= row < rows and 0 <= col < cols:
                         grid[row, col] = current_color
 
-        screen.fill((0, 0, 0))
+        
         draw_toolbar(screen, current_color)
         fill_grid(grid, screen)
         draw_grid(screen, grid)
