@@ -20,6 +20,10 @@ def main():
         draw_grid(screen, grid)
         pygame.display.flip()
         clock.tick(60)
+        fill_grid(grid, screen)
+    pygame.quit()
+
+
 
 #define grid as np array
 def make_grid(rows, width):
@@ -27,6 +31,21 @@ def make_grid(rows, width):
 
 #make a grid
 def draw_grid(screen, grid):
+    rows, cols = grid.shape
+    screen_width, screen_height = screen.get_size()
+    cell_width = screen_width / cols
+    cell_height = screen_height / rows
+    for row in range(rows):
+        for col in range(cols):
+            rect = pygame.Rect(
+                col * cell_width,
+                row * cell_height,
+                cell_width,
+                cell_height
+            )
+            pygame.draw.rect(screen, (255, 255, 255), rect, 1)
+
+def fill_grid(grid, screen):
     rows, cols = grid.shape
     screen_width, screen_height = screen.get_size()
     cell_width = screen_width / cols
@@ -40,7 +59,31 @@ def draw_grid(screen, grid):
                 cell_width,
                 cell_height
             )
-            pygame.draw.rect(screen, (255, 255, 255), rect, 1)
+    for row in range(rows):
+        for col in rangecols:
+            rect = pygame.Rect(
+                col * cell_width,
+                row * cell_height,
+                cell_width,
+                cell_height
+            )
+
+            # fill cell by grid value
+            if grid[row, col] == 1:
+                color = (255, 255, 255)
+            elif grid[row, col] == 2:
+                color = (255, 0, 0)  
+            elif grid[row, col] == 3:
+                color = (0, 0, 255) 
+            else:
+                color = (0, 0, 0)  # černá (prázdná)
+
+    pygame.draw.rect(screen, color, rect)
+    pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # okraj bíle
+
+    # Aktualizovat jen tuto část obrazovky
+    pygame.display.update(rect)
+
 
 if __name__ == '__main__':
     pygame.init()
