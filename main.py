@@ -40,6 +40,10 @@ def main():
                     col = int(mouse_x / (width / cols))
                     row = int((mouse_y - TOOLBAR_HEIGHT) / (height / rows))
                     if 0 <= row < rows and 0 <= col < cols:
+                        if current_color == 2 and 2 in grid:
+                            grid[grid == 2] = 0
+                        elif current_color == 3 and 3 in grid:
+                            grid[grid == 3] = 0                        
                         grid[row, col] = current_color
 
         
