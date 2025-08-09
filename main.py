@@ -6,28 +6,32 @@ import pygame
 def main():
     rows = 10
     cols = 10
+    current_color = 2
 
     screen = pygame.display.set_mode((500, 500))  # window size in pixels
     grid = make_grid(rows, cols)
-    grid[5,6] = 2
     print(grid)
     running = True
     clock = pygame.time.Clock()
     cell_width, cell_height = draw_grid(screen, grid)
-    current_color = 2
+    draw_toolbar(screen, current_color)
     #program loop/quit handle
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            
+            #changing the cell by clicking
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 col = int(mouse_x / cell_width)
                 row = int(mouse_y / cell_height)
                 grid[row, col] = current_color
+            elif event.type == 
         pygame.display.flip()
         clock.tick(60)
         fill_grid(grid, screen)
+        
     pygame.quit()
     quit()
 
@@ -81,6 +85,18 @@ def fill_grid(grid, screen):
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)
             pygame.display.update(rect)
 
+
+def draw_toolbar(screen, current_color):
+    pygame.draw.rect(screen, (50, 50, 50), (0, 0, screen.get_width(), TOOLBAR_HEIGHT))
+    
+    colors = [(255, 255, 255), (255, 0, 0), (0, 0, 255)]
+    x_positions = [10, 70, 130]
+
+    for i, color in enumerate(colors):
+        rect = pygame.Rect(x_positions[i], 10, 40, 30)
+        pygame.draw.rect(screen, color, rect)
+        if current_color == i + 1:
+            pygame.draw.rect(screen, (255, 255, 0), rect, 3)
 
 if __name__ == '__main__':
     pygame.init()
