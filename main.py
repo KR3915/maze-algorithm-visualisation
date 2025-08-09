@@ -31,6 +31,8 @@ def main():
                         current_color = 2
                     elif 130 < mouse_x < 170:
                         current_color = 3
+                    elif 190 < mouse_x < 230:  # guma
+                        current_color = 0
                 else:
                     # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
                     col = int(mouse_x / (width / cols))
@@ -101,15 +103,29 @@ def fill_grid(grid, screen):
 def draw_toolbar(screen, current_color):
     pygame.draw.rect(screen, (50, 50, 50), (0, 0, screen.get_width(), TOOLBAR_HEIGHT))
     
-    colors = [(255, 255, 255), (255, 0, 0), (0, 0, 255)]
+    colors = [(255, 255, 255), (255, 0, 0), (0, 0, 255)]  # jen barvy
     x_positions = [10, 70, 130]
-
+    
+    # vykreslení barevných tlačítek
     for i, color in enumerate(colors):
         rect = pygame.Rect(x_positions[i], 10, 40, 30)
         pygame.draw.rect(screen, color, rect)
         if current_color == i + 1:
             pygame.draw.rect(screen, (255, 255, 0), rect, 3)
+    
+    # --- tlačítko gumy ---
+    eraser_rect = pygame.Rect(190, 10, 40, 30)
+    pygame.draw.rect(screen, (200, 200, 200), eraser_rect)  # šedé pozadí
 
+    # textová "ikona" gumy (písmeno E)
+    font = pygame.font.Font(None, 24)
+    text = font.render("E", True, (0, 0, 0))
+    text_pos = text.get_rect(center=eraser_rect.center)
+    screen.blit(text, text_pos)
+
+    # zvýraznění gumy, pokud je vybraná (current_color == 0)
+    if current_color == 0:
+        pygame.draw.rect(screen, (255, 255, 0), eraser_rect, 3)
 if __name__ == '__main__':
     pygame.init()
     main()
