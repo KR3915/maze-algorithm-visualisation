@@ -1,90 +1,102 @@
 import numpy as np
 import pygame
 
+TOOLBAR_HEIGHT = 50
 
-#main loop
 def main():
     rows = 10
     cols = 10
     current_color = 2
+    width = 500
+    height = 500
 
-    screen = pygame.display.set_mode((500, 500))  # window size in pixels
+    screen = pygame.display.set_mode((width, height + TOOLBAR_HEIGHT))  # přidáme toolbar výšku
     grid = make_grid(rows, cols)
     print(grid)
     running = True
     clock = pygame.time.Clock()
-    cell_width, cell_height = draw_grid(screen, grid)
-    draw_toolbar(screen, current_color)
-    #program loop/quit handle
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             
-            #changing the cell by clicking
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                col = int(mouse_x / cell_width)
-                row = int(mouse_y / cell_height)
-                grid[row, col] = current_color
-            elif event.type == 
+                if mouse_y < TOOLBAR_HEIGHT:
+                    # Kliknutí v toolbaru - změna barvy
+                    if 10 < mouse_x < 50:
+                        current_color = 1
+                    elif 70 < mouse_x < 110:
+                        current_color = 2
+                    elif 130 < mouse_x < 170:
+                        current_color = 3
+                else:
+                    # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
+                    col = int(mouse_x / (width / cols))
+                    row = int((mouse_y - TOOLBAR_HEIGHT) / (height / rows))
+                    if 0 <= row < rows and 0 <= col < cols:
+                        grid[row, col] = current_color
+
+        screen.fill((0, 0, 0))
+        draw_toolbar(screen, current_color)
+        fill_grid(grid, screen)
+        draw_grid(screen, grid)
+
         pygame.display.flip()
         clock.tick(60)
-        fill_grid(grid, screen)
         
     pygame.quit()
     quit()
 
-#define grid as np array
-def make_grid(rows, width):
-    return np.zeros((rows, width))
+def make_grid(rows, cols):
+    return np.zeros((rows, cols))
 
-#make a grid
 def draw_grid(screen, grid):
     rows, cols = grid.shape
     screen_width, screen_height = screen.get_size()
+    usable_height = screen_height - TOOLBAR_HEIGHT  # odečteme toolbar
     cell_width = screen_width / cols
-    cell_height = screen_height / rows
+    cell_height = usable_height / rows
     for row in range(rows):
         for col in range(cols):
             rect = pygame.Rect(
                 col * cell_width,
-                row * cell_height,
+                row * cell_height + TOOLBAR_HEIGHT,  # posun dolů o toolbar
                 cell_width,
                 cell_height
             )
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)
-    return(cell_width, cell_height)
+    return cell_width, cell_height
 
 def fill_grid(grid, screen):
     rows, cols = grid.shape
     screen_width, screen_height = screen.get_size()
+    usable_height = screen_height - TOOLBAR_HEIGHT  # odečteme toolbar
     cell_width = screen_width / cols
-    cell_height = screen_height / rows
+    cell_height = usable_height / rows
 
     for row in range(rows):
         for col in range(cols):
             rect = pygame.Rect(
                 col * cell_width,
-                row * cell_height,
+                row * cell_height + TOOLBAR_HEIGHT,  # posun dolů
                 cell_width,
                 cell_height
             )
 
-            # fill cell by grid value
             if grid[row, col] == 1:
                 color = (255, 255, 255)
             elif grid[row, col] == 2:
-                color = (255, 0, 0)  
+                color = (255, 0, 0)
             elif grid[row, col] == 3:
-                color = (0, 0, 255) 
+                color = (0, 0, 255)
             else:
                 color = (0, 0, 0)
 
             pygame.draw.rect(screen, color, rect)
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)
             pygame.display.update(rect)
-
 
 def draw_toolbar(screen, current_color):
     pygame.draw.rect(screen, (50, 50, 50), (0, 0, screen.get_width(), TOOLBAR_HEIGHT))
