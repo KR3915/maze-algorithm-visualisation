@@ -1,6 +1,6 @@
 import numpy as np
 import pygame
-
+import subprocess
 TOOLBAR_HEIGHT = 50
 
 def main():
@@ -40,7 +40,9 @@ def main():
                     #Clear
                     elif 250 < mouse_x < 290: 
                         grid = np.zeros((rows, cols))
-                    #info
+                    #info button
+                    elif 310 < mouse_x < 350:
+                        subprocess.Popen(["python", "info.py"])
                 else:
                     # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
                     col = int(mouse_x / (width / cols))
@@ -139,6 +141,10 @@ def draw_toolbar(screen, current_color):
     clear_rect = pygame.Rect(250, 10, 40, 30)
     pygame.draw.rect(screen, (200, 200, 200), clear_rect)
 
+    # --- Guide Button ---
+    guide_rect = pygame.Rect(310, 10, 40, 30)
+    pygame.draw.rect(screen, (200, 200, 200), guide_rect)
+
     # icon of eraser
     font = pygame.font.Font(None, 24)
     text = font.render("E", True, (0, 0, 0))
@@ -151,6 +157,12 @@ def draw_toolbar(screen, current_color):
     text_pos = text.get_rect(center=clear_rect.center)
     screen.blit(text, text_pos)
 
+    #icon of guide
+    font = pygame.font.Font(None, 20)
+    text = font.render("guide", True, (0, 0, 0))
+    text_pos = text.get_rect(center=guide_rect.center)
+    screen.blit(text, text_pos)
+    
     # highlight of selected button
     if current_color == 0:
         pygame.draw.rect(screen, (255, 255, 0), eraser_rect, 3)
