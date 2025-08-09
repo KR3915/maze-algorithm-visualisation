@@ -9,6 +9,8 @@ def main():
 
     screen = pygame.display.set_mode((500, 500))  # window size in pixels
     grid = make_grid(rows, cols)
+    grid[5,6] = 2
+    print(grid)
     running = True
     clock = pygame.time.Clock()
     #program loop/quit handle
@@ -59,14 +61,6 @@ def fill_grid(grid, screen):
                 cell_width,
                 cell_height
             )
-    for row in range(rows):
-        for col in rangecols:
-            rect = pygame.Rect(
-                col * cell_width,
-                row * cell_height,
-                cell_width,
-                cell_height
-            )
 
             # fill cell by grid value
             if grid[row, col] == 1:
@@ -76,13 +70,11 @@ def fill_grid(grid, screen):
             elif grid[row, col] == 3:
                 color = (0, 0, 255) 
             else:
-                color = (0, 0, 0)  # černá (prázdná)
+                color = (0, 0, 0)
 
-    pygame.draw.rect(screen, color, rect)
-    pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # okraj bíle
-
-    # Aktualizovat jen tuto část obrazovky
-    pygame.display.update(rect)
+            pygame.draw.rect(screen, color, rect)
+            pygame.draw.rect(screen, (255, 255, 255), rect, 1)
+            pygame.display.update(rect)
 
 
 if __name__ == '__main__':
