@@ -1,6 +1,8 @@
 import numpy as np
 import pygame
 import subprocess
+from collections import deque
+
 TOOLBAR_HEIGHT = 50
 
 def main():
@@ -22,6 +24,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             # ==== Mouse Clicking ====
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if mouse_y < TOOLBAR_HEIGHT:
@@ -53,12 +56,19 @@ def main():
                         elif current_color == 3 and 3 in grid:
                             grid[grid == 3] = 0                        
                         grid[row, col] = current_color
+        start_pos = np.where(grid == 2)
+        goal_pos = np.where(grid == 3)
+
+        if len(start_pos[0]) > 0 and len(goal_pos[0]) > 0:
+            start = (start_pos[0][0], start_pos[1][0])
+            goal = (goal_pos[0][0], goal_pos[1][0])
+            path = bfs_path(grid, start, goal)
+            print(path)
 
         
         draw_toolbar(screen, current_color)
         fill_grid(grid, screen)
         draw_grid(screen, grid)
-
         pygame.display.flip()
         clock.tick(60)
         
@@ -166,6 +176,49 @@ def draw_toolbar(screen, current_color):
     # highlight of selected button
     if current_color == 0:
         pygame.draw.rect(screen, (255, 255, 0), eraser_rect, 3)
+
+
+def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
+    start = tuple(map(int, np.ravel(start)))
+    goal = tuple(map(int, np.ravel(goal)))
+    print("start:", start, "goal:", goal)
+    print("start shape:", np.shape(start))
+    print("goal shape:", np.shape(goal))
+
+    rows, cols = maze.shape
+    visited = np.zeros_like(maze, dtype=bool)
+    parent = {}
+    
+    queue = deque([start])
+    visited[start] = True
+    
+    # 4-directional moves (up, down, left, right)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    while queue:
+        r, c = queue.popleft()
+        
+        if (r, c) == goal:
+            # reconstruct path
+            path = []
+            curr = goal
+            while curr != start:
+                path.append(curr)
+                curr = parent[curr]
+            path.append(start)
+            path.reverse()
+            return path
+        
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols:
+                if not visited[nr, nc] and maze[nr, nc] == 0:
+                    visited[nr, nc] = True
+                    parent[(nr, nc)] = (r, c)
+                    queue.append((int(nr), int(nc)))  # always tuple of ints
+    
+    return []  # no path found
+
 
 if __name__ == '__main__':
     pygame.init()
