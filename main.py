@@ -181,9 +181,6 @@ def draw_toolbar(screen, current_color):
 def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
     start = tuple(map(int, np.ravel(start)))
     goal = tuple(map(int, np.ravel(goal)))
-    print("start:", start, "goal:", goal)
-    print("start shape:", np.shape(start))
-    print("goal shape:", np.shape(goal))
 
     rows, cols = maze.shape
     visited = np.zeros_like(maze, dtype=bool)
@@ -192,14 +189,12 @@ def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
     queue = deque([start])
     visited[start] = True
     
-    # 4-directional moves (up, down, left, right)
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     
     while queue:
         r, c = queue.popleft()
         
         if (r, c) == goal:
-            # reconstruct path
             path = []
             curr = goal
             while curr != start:
@@ -212,12 +207,12 @@ def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
         for dr, dc in directions:
             nr, nc = r + dr, c + dc
             if 0 <= nr < rows and 0 <= nc < cols:
-                if not visited[nr, nc] and maze[nr, nc] == 0:
+                if not visited[nr, nc] and (maze[nr, nc] == 0 or (nr, nc) == goal):
                     visited[nr, nc] = True
                     parent[(nr, nc)] = (r, c)
-                    queue.append((int(nr), int(nc)))  # always tuple of ints
+                    queue.append((nr, nc))
     
-    return []  # no path found
+    return [] 
 
 
 if __name__ == '__main__':
