@@ -66,7 +66,7 @@ def main():
                         grid[row, col] = current_color
             start_pos = np.where(grid == 2)
             goal_pos = np.where(grid == 3)
-
+            #==== pathing ===
             if len(start_pos[0]) > 0 and len(goal_pos[0]) > 0:
                 start = (start_pos[0][0], start_pos[1][0])
                 goal = (goal_pos[0][0], goal_pos[1][0])
@@ -85,25 +85,23 @@ def main():
                 path = []
 
 
-        
+        #==== Drawing UI ====
         draw_toolbar(screen, current_color)
         fill_cells(grid, screen)
         draw_grid(screen, grid)
         pygame.display.flip()
         clock.tick(60)
-        if grid_changed(grid, grid_prev):
-            print(":pppp")
+
     pygame.quit()
     quit()
-
+#checks if grid has been changed
 def grid_changed(grid, grid_prev):
     if np.array_equal(grid, grid_prev):
         return False
     return True
 
-
+#drawing path into the grid
 def draw_path(screen, path, grid):
-    # Pokud je cesta příliš krátká, nic nedělej
     if len(path) <= 2:
         return
     inner_path = path[1:-1]
@@ -214,7 +212,7 @@ def draw_toolbar(screen, current_color):
     if current_color == 0:
         pygame.draw.rect(screen, (255, 255, 0), eraser_rect, 3)
 
-
+#bfs pathing
 def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
     start = tuple(map(int, np.ravel(start)))
     goal = tuple(map(int, np.ravel(goal)))
