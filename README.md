@@ -24,7 +24,7 @@ Visual interactive grid editor and pathfinding visualizer using BFS (Breadth-Fir
 ## Installation
 
 ```bash
-pip install pygame numpy
+pip install -r requirements.txt
 ```
 
 ## Usage
