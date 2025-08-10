@@ -12,20 +12,28 @@ def main():
     current_color = 2
     width = 500
     height = 500
+    prev_start = None
+    prev_goal = None
+
+
+
 # === init ===
     screen = pygame.display.set_mode((width, height + TOOLBAR_HEIGHT))  # přidáme toolbar výšku
     grid = make_grid(rows, cols)
+    grid_prev = grid
     print(grid)
     running = True
     clock = pygame.time.Clock()
 # ===== Main Loop =====
     while running:
+        grid_prev = grid.copy()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             # ==== Mouse Clicking ====
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                
                 mouse_x, mouse_y = event.pos
                 if mouse_y < TOOLBAR_HEIGHT:
                     #White brush
@@ -56,24 +64,51 @@ def main():
                         elif current_color == 3 and 3 in grid:
                             grid[grid == 3] = 0                        
                         grid[row, col] = current_color
-        start_pos = np.where(grid == 2)
-        goal_pos = np.where(grid == 3)
+            start_pos = np.where(grid == 2)
+            goal_pos = np.where(grid == 3)
 
-        if len(start_pos[0]) > 0 and len(goal_pos[0]) > 0:
-            start = (start_pos[0][0], start_pos[1][0])
-            goal = (goal_pos[0][0], goal_pos[1][0])
-            path = bfs_path(grid, start, goal)
-            print(path)
+            if len(start_pos[0]) > 0 and len(goal_pos[0]) > 0:
+                start = (start_pos[0][0], start_pos[1][0])
+                goal = (goal_pos[0][0], goal_pos[1][0])
+
+                if grid_changed(grid,grid_prev):
+                    grid[grid == 4] = 0
+                    prev_start = start
+                    prev_goal = goal
+
+                path = bfs_path(grid, start, goal)
+                draw_path(screen, path, grid)
+            else:
+                grid[grid == 4] = 0
+                prev_start = None
+                prev_goal = None
+                path = []
+
 
         
         draw_toolbar(screen, current_color)
-        fill_grid(grid, screen)
+        fill_cells(grid, screen)
         draw_grid(screen, grid)
         pygame.display.flip()
         clock.tick(60)
-        
+        if grid_changed(grid, grid_prev):
+            print(":pppp")
     pygame.quit()
     quit()
+
+def grid_changed(grid, grid_prev):
+    if np.array_equal(grid, grid_prev):
+        return False
+    return True
+
+
+def draw_path(screen, path, grid):
+    # Pokud je cesta příliš krátká, nic nedělej
+    if len(path) <= 2:
+        return
+    inner_path = path[1:-1]
+    for r, c in inner_path:
+        grid[r, c] = 4 # zelená
 
 #Making grind consisting of 0s
 def make_grid(rows, cols):
@@ -98,7 +133,7 @@ def draw_grid(screen, grid):
     return cell_width, cell_height
 
 #updates colors depending on np array
-def fill_grid(grid, screen):
+def fill_cells(grid, screen):
     rows, cols = grid.shape
     screen_width, screen_height = screen.get_size()
     usable_height = screen_height - TOOLBAR_HEIGHT  # odečteme toolbar
@@ -115,11 +150,13 @@ def fill_grid(grid, screen):
             )
 
             if grid[row, col] == 1:
-                color = (255, 255, 255)
+                color = (255, 255, 255) #obstacle
             elif grid[row, col] == 2:
-                color = (255, 0, 0)
+                color = (255, 0, 0) #start
             elif grid[row, col] == 3:
-                color = (0, 0, 255)
+                color = (0, 0, 255) #end
+            elif grid[row, col] == 4:
+                color = (0, 255, 0) #path
             else:
                 color = (0, 0, 0)
 
@@ -206,8 +243,8 @@ def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
         
         for dr, dc in directions:
             nr, nc = r + dr, c + dc
-            if 0 <= nr < rows and 0 <= nc < cols:
-                if not visited[nr, nc] and (maze[nr, nc] == 0 or (nr, nc) == goal):
+            if 0 <= nr < rows and 0 <= nc < cols or 4 <= nr < rows and 4 <= nc < cols:
+                if not visited[nr, nc] and (maze[nr, nc] == 0 or (nr, nc) == goal) or not visited[nr, nc] and (maze[nr, nc] == 4 or (nr, nc) == goal):
                     visited[nr, nc] = True
                     parent[(nr, nc)] = (r, c)
                     queue.append((nr, nc))
