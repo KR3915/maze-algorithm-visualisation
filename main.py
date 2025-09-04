@@ -7,8 +7,8 @@ TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 67
-    cols = 67
+    rows = 100
+    cols = 100
     current_color = 2
     width = 1000
     height = 1000
@@ -33,7 +33,6 @@ def main():
             # ==== Mouse Clicking ====
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                
                 mouse_x, mouse_y = event.pos
                 if mouse_y < TOOLBAR_HEIGHT:
                     #White brush
