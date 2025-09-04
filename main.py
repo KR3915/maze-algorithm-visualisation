@@ -2,13 +2,13 @@ import numpy as np
 import pygame
 import subprocess
 from collections import deque
-
+#import maze
 TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 30
-    cols = 30
+    rows = 100
+    cols = 100
     current_color = 2
     width = 1000
     height = 1000
@@ -94,6 +94,10 @@ def main():
 
     pygame.quit()
     quit()
+
+#Randomize
+def randomize(matrix):
+    return maze.randomize(matrix)
 #checks if grid has been changed
 def grid_changed(grid, grid_prev):
     if np.array_equal(grid, grid_prev):
