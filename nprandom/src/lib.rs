@@ -1,19 +1,28 @@
-use numpy::{PyArray1, PyReadonlyArray1};
+use numpy::{PyArray2, PyReadonlyArray2};
 use pyo3::prelude::*;
+use rand::Rng;
 
 #[pyfunction]
-fn double_array(py: Python<'_>, input: PyReadonlyArray1<'_, f64>) -> PyResult<()> {
+fn randomize(py: Python<'_>, input: PyReadonlyArray2<'_, f64>) -> PyResult<Py<PyArray2<i32>>> {
     let array = input.as_array();
+    let shape = array.shape();
+    let mut rng = rand::rng();
 
-    // Iterate over each element with coordinates
-    for (i, value) in array.indexed_iter() {
-        println!("Element at ({}) = {}", i, value);
+    // Create a new 2D Vec to store the output
+    let mut output = vec![vec![0i32; shape[1]]; shape[0]];
+
+    for ((i, j), _value) in array.indexed_iter() {
+        let rand_num = rng.random_range(1..10);
+        output[i][j] = if rand_num < 4 { 1 } else { 0 };
     }
-    Ok(())
+
+    // Convert Vec<Vec<i32>> to PyArray2<i32> and return it
+    let pyarray = PyArray2::from_vec2(py, &output).unwrap();
+    Ok(pyarray.to_owned().into())
 }
 
 #[pymodule]
-fn nprandom(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(double_array, m)?)?;
+fn maze(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(randomize, m)?)?;
     Ok(())
 }
