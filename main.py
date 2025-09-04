@@ -7,11 +7,11 @@ TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 10
-    cols = 10
+    rows = 30
+    cols = 30
     current_color = 2
-    width = 500
-    height = 500
+    width = 1000
+    height = 1000
     prev_start = None
     prev_goal = None
 
