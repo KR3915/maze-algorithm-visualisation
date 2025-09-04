@@ -7,8 +7,8 @@ TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 10
-    cols = 10
+    rows = 67
+    cols = 67
     current_color = 2
     width = 1000
     height = 1000
@@ -56,6 +56,7 @@ def main():
                         subprocess.Popen(["python", "info.py"])
                     #randomize button
                     elif 370 < mouse_x < 410:
+                        grid = np.zeros((rows, cols))
                         grid = randomize(grid)
                 else:
                     # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
