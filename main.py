@@ -2,13 +2,13 @@ import numpy as np
 import pygame
 import subprocess
 from collections import deque
-#import maze
+import maze
 TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 100
-    cols = 100
+    rows = 10
+    cols = 10
     current_color = 2
     width = 1000
     height = 1000
@@ -54,6 +54,9 @@ def main():
                     #info button
                     elif 310 < mouse_x < 350:
                         subprocess.Popen(["python", "info.py"])
+                    #randomize button
+                    elif 370 < mouse_x < 410:
+                        grid = randomize(grid)
                 else:
                     # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
                     col = int(mouse_x / (width / cols))
@@ -98,6 +101,8 @@ def main():
 #Randomize
 def randomize(matrix):
     return maze.randomize(matrix)
+
+
 #checks if grid has been changed
 def grid_changed(grid, grid_prev):
     if np.array_equal(grid, grid_prev):
@@ -193,6 +198,10 @@ def draw_toolbar(screen, current_color):
     # --- Guide Button ---
     guide_rect = pygame.Rect(310, 10, 40, 30)
     pygame.draw.rect(screen, (200, 200, 200), guide_rect)
+    
+    # --- Randomize Button ---
+    rnd_rect = pygame.Rect(370, 10, 40, 30)
+    pygame.draw.rect(screen, (200, 200, 200), rnd_rect)
 
     # icon of eraser
     font = pygame.font.Font(None, 24)
@@ -210,6 +219,12 @@ def draw_toolbar(screen, current_color):
     font = pygame.font.Font(None, 20)
     text = font.render("guide", True, (0, 0, 0))
     text_pos = text.get_rect(center=guide_rect.center)
+    screen.blit(text, text_pos)
+    
+    #icon of randomize
+    font = pygame.font.Font(None, 20)
+    text = font.render("RND", True, (0, 0, 0))
+    text_pos = text.get_rect(center=rnd_rect.center)
     screen.blit(text, text_pos)
     
     # highlight of selected button
