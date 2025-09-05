@@ -79,8 +79,9 @@ def main():
                     prev_start = start
                     prev_goal = goal
 
-                path = bfs_path(grid, start, goal)
+                path, visited = bfs_path(grid, start, goal)
                 draw_path(screen, path, grid)
+                draw_visited(visited, grid)
             else:
                 grid[grid == 4] = 0
                 prev_start = None
@@ -98,6 +99,12 @@ def main():
     pygame.quit()
     quit()
 
+def draw_visited(visited, grid):
+    for r in range(visited.shape[0]):
+        for c in range(visited.shape[1]):
+            if visited[r, c]:
+                if grid[r, c] == 0:  # Only change empty cells
+                    grid[r, c] = 5  
 #Randomize
 def randomize(matrix):
     return maze.randomize(matrix)
@@ -164,6 +171,8 @@ def fill_cells(grid, screen):
                 color = (0, 0, 255) #end
             elif grid[row, col] == 4:
                 color = (0, 255, 0) #path
+            elif grid[row, col] == 5:
+                color = (0, 0, 255) #visited
             else:
                 color = (0, 0, 0)
 
@@ -256,13 +265,14 @@ def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
                 curr = parent[curr]
             path.append(start)
             path.reverse()
-            return path
+            return path, visited
         
         for dr, dc in directions:
             nr, nc = r + dr, c + dc
             if 0 <= nr < rows and 0 <= nc < cols or 4 <= nr < rows and 4 <= nc < cols:
                 if not visited[nr, nc] and (maze[nr, nc] == 0 or (nr, nc) == goal) or not visited[nr, nc] and (maze[nr, nc] == 4 or (nr, nc) == goal):
                     visited[nr, nc] = True
+                    print(f'visited {visited} | visited type {type(visited)}')
                     parent[(nr, nc)] = (r, c)
                     queue.append((nr, nc))
     
