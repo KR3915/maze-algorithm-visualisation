@@ -3,15 +3,21 @@ import pygame
 import subprocess
 from collections import deque
 import maze
+import commentjson as json
+import os
 TOOLBAR_HEIGHT = 50
 
 def main():
-# === Variables ===
-    rows = 60
-    cols = 60
+    # === Load config ===
+    with open('config.jsonc', 'r') as f:
+        config = json.load(f)
+        rows = config["rows"]
+        cols = config["cols"]
+        width = config["width"]
+        height = config["height"]
+        obstacle_density = config["obstacle_density"]
+
     current_color = 2
-    width = 1000
-    height = 1000
     prev_start = None
     prev_goal = None
 

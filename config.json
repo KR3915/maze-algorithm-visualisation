@@ -1,0 +1,9 @@
+{
+    // Maze configuration settings
+    "rows": 60,
+    "cols": 60,
+    "width": 1000,
+    "height": 1000,
+    // Density of obstacles in percentage (0-100)
+    "obstacle_density": 40
+}
