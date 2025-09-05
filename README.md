@@ -3,6 +3,8 @@
 
 Visual interactive grid editor and pathfinding visualizer using BFS (Breadth-First Search) algorithm, built with Python and Pygame.
 
+#DEMO
+<img src='assets/demo.gif' width='600'>
 ## Features
 
 - Grid editor with customizable cells:
@@ -25,6 +27,8 @@ Visual interactive grid editor and pathfinding visualizer using BFS (Breadth-Fir
 
 ```bash
 pip install -r requirements.txt
+cd mazelib
+maturin develop
 ```
 
 ## Usage
