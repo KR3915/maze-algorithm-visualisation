@@ -62,7 +62,7 @@ def main():
                     #randomize button
                     elif 370 < mouse_x < 410:
                         grid = np.zeros((rows, cols))
-                        grid = randomize(grid)
+                        grid = randomize(grid, obstacle_density)
 
                     #settings button
                     elif 430 < mouse_x < 470:
@@ -110,8 +110,8 @@ def main():
     quit()
 
 #Randomize
-def randomize(matrix):
-    return maze.randomize(matrix)
+def randomize(matrix, density):
+    return maze.randomize(matrix, density)
 
 
 #checks if grid has been changed

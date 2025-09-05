@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use rand::Rng;
 
 #[pyfunction]
-fn randomize(py: Python<'_>, input: PyReadonlyArray2<'_, f64>) -> PyResult<Py<PyArray2<i32>>> {
+fn randomize(py: Python<'_>, input: PyReadonlyArray2<'_, f64>, density: f64) -> PyResult<Py<PyArray2<i32>>> {
     let array = input.as_array();
     let shape = array.shape();
     let mut rng = rand::rng();
@@ -12,8 +12,8 @@ fn randomize(py: Python<'_>, input: PyReadonlyArray2<'_, f64>) -> PyResult<Py<Py
     let mut output = vec![vec![0i32; shape[1]]; shape[0]];
 
     for ((i, j), _value) in array.indexed_iter() {
-        let rand_num = rng.random_range(1..10);
-        output[i][j] = if rand_num < 4 { 1 } else { 0 };
+        let rand_num = rng.random_range(1..100);
+        output[i][j] = if rand_num < (density) as i32 { 1 } else { 0 };
     }
 
     // Convert Vec<Vec<i32>> to PyArray2<i32> and return it
