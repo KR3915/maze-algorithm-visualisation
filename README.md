@@ -1,5 +1,5 @@
 
-# Maze Algorithm Visualisation
+# BFS playground
 
 Visual interactive grid editor and pathfinding visualizer using BFS (Breadth-First Search) algorithm, built with Python and Pygame.
 
