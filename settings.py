@@ -38,7 +38,7 @@ def only_numbers(P):
 main = tk.Tk()
 main.title("Settings")
 main.config(bg="#E4E2E2")
-main.geometry("400x320")
+main.geometry("400x400")
 main.resizable(False, False)
 main.attributes('-topmost', True)  # Always on top
 
