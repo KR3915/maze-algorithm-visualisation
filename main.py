@@ -7,8 +7,8 @@ TOOLBAR_HEIGHT = 50
 
 def main():
 # === Variables ===
-    rows = 100
-    cols = 100
+    rows = 60
+    cols = 60
     current_color = 2
     width = 1000
     height = 1000
@@ -57,6 +57,10 @@ def main():
                     elif 370 < mouse_x < 410:
                         grid = np.zeros((rows, cols))
                         grid = randomize(grid)
+
+                    #settings button
+                    elif 430 < mouse_x < 470:
+                        subprocess.Popen(["python", "settings.py"])
                 else:
                     # Kliknutí v gridu - posuneme y o TOOLBAR_HEIGHT
                     col = int(mouse_x / (width / cols))
@@ -79,9 +83,9 @@ def main():
                     prev_start = start
                     prev_goal = goal
 
-                path, visited = bfs_path(grid, start, goal)
+                path = bfs_path(grid, start, goal)
                 draw_path(screen, path, grid)
-                draw_visited(visited, grid)
+              
             else:
                 grid[grid == 4] = 0
                 prev_start = None
@@ -99,12 +103,6 @@ def main():
     pygame.quit()
     quit()
 
-def draw_visited(visited, grid):
-    for r in range(visited.shape[0]):
-        for c in range(visited.shape[1]):
-            if visited[r, c]:
-                if grid[r, c] == 0:  # Only change empty cells
-                    grid[r, c] = 5  
 #Randomize
 def randomize(matrix):
     return maze.randomize(matrix)
@@ -193,7 +191,8 @@ def draw_toolbar(screen, current_color):
         pygame.draw.rect(screen, color, rect)
         if current_color == i + 1:
             pygame.draw.rect(screen, (255, 255, 0), rect, 3)
-    
+    #TODO: add icons to buttons
+
     # ====== buttons =======
     #NOTE: pygame.Rect(X,Y,Z,A) X is allways bigger by 60
     # --- eraser button ---
@@ -211,6 +210,10 @@ def draw_toolbar(screen, current_color):
     # --- Randomize Button ---
     rnd_rect = pygame.Rect(370, 10, 40, 30)
     pygame.draw.rect(screen, (200, 200, 200), rnd_rect)
+
+    #--- settings button ---
+    settings_rect = pygame.Rect(430, 10, 40, 30)
+    pygame.draw.rect(screen, (200, 200, 200), settings_rect)
 
     # icon of eraser
     font = pygame.font.Font(None, 24)
@@ -235,7 +238,13 @@ def draw_toolbar(screen, current_color):
     text = font.render("RND", True, (0, 0, 0))
     text_pos = text.get_rect(center=rnd_rect.center)
     screen.blit(text, text_pos)
-    
+
+    #icon of settings
+    font = pygame.font.Font(None, 20)
+    text = font.render("SET", True, (0, 0, 0))
+    text_pos = text.get_rect(center=settings_rect.center)
+    screen.blit(text, text_pos)
+
     # highlight of selected button
     if current_color == 0:
         pygame.draw.rect(screen, (255, 255, 0), eraser_rect, 3)
@@ -265,7 +274,7 @@ def bfs_path(maze: np.ndarray, start: tuple, goal: tuple):
                 curr = parent[curr]
             path.append(start)
             path.reverse()
-            return path, visited
+            return path
         
         for dr, dc in directions:
             nr, nc = r + dr, c + dc
