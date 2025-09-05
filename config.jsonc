@@ -1,7 +1,7 @@
 {
-    "rows": 20,
-    "cols": 20,
+    "rows": 40,
+    "cols": 40,
     "width": 800,
     "height": 800,
-    "obstacle_density": 80
+    "obstacle_density": 28
 }
